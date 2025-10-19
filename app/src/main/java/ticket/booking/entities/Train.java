@@ -1,0 +1,14 @@
+package ticket.booking.entities;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public class Train {
+    private String trainId;
+    private String trainNumber;
+    private String trainName;
+    private Map<String, Date> stationTimes;
+    private List<List<Integer>> seats;
+    private List<String> stations;
+}
