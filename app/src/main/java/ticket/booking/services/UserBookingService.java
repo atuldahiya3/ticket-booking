@@ -2,6 +2,7 @@ package ticket.booking.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ticket.booking.entities.Ticket;
 import ticket.booking.entities.User;
 import ticket.booking.utils.UserServiceUtil;
 
@@ -21,8 +22,14 @@ public class UserBookingService {
 
     public UserBookingService(User currentUser) throws IOException {
         this.user=currentUser;
+        getUsers();
+    }
+    public UserBookingService() throws IOException{
+        getUsers();
+    }
+    public List<User> getUsers() throws IOException {
         File users= new File(USERS_PATH);
-        userList=mapper.readValue(users, new TypeReference<List<User>>() {});
+        return mapper.readValue(users, new TypeReference<List<User>>() {});
     }
     public boolean loginUser(){
         Optional<User> foundUser= userList.stream().filter(currentUser->{
@@ -44,9 +51,25 @@ public class UserBookingService {
     public void fetchBookings(){
         user.printTickets();
     }
-    public boolean cancelBooking(){
+    public boolean cancelBooking(String ticketId){
         try{
-            
+            List<Ticket> bookings=user.getTicketsBooked();
+            if (bookings == null || bookings.isEmpty()) return false;
+            Optional<Ticket> ticketToCancel= bookings.stream().filter({ticket -> ticket.getTicketId().equals(ticketId)});
+            if(ticketToCancel.isPresent()){
+                bookings.remove(ticketToCancel.get());
+                user.setTicketsBooked(bookings);
+                for(User u : userList){
+                    if(u.getName().equals(user.getName())){
+                        u.setTicketsBooked(bookings);
+                    }
+                }
+            }
+            File users= new File(USERS_PATH);
+            mapper.writeValue(users, userList);
+           return Boolean.TRUE;
+        }catch(Exception e){
+            return Boolean.FALSE;
         }
     }
 

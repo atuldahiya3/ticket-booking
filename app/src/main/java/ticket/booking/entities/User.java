@@ -22,7 +22,9 @@ public class User {
     public String getPassword(){ return password;};
     public String getHashPassword(){ return hashPassword; };
     public List<Ticket> getTicketsBooked(){ return ticketsBooked; };
-
+//    public String getTickedId(){
+//        return ticketsBooked.ticketId;
+//    }
     public void printTickets(){
         for(int i=0;i<ticketsBooked.size();i++){
             System.out.println(ticketsBooked.get(i).getTicketInfo());
